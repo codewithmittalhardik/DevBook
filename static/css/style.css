@@ -1208,6 +1208,34 @@ footer {
     width: 100%;
 }
 
+.footer-socials {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.footer-socials a {
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+}
+
+.footer-socials a:hover {
+    color: var(--primary);
+    background: rgba(99, 102, 241, 0.12);
+    transform: translateY(-1px);
+}
+
+.footer-socials svg {
+    width: 1rem;
+    height: 1rem;
+}
+
 @media (max-width: 768px) {
     .footer-grid {
         grid-template-columns: 1fr;
