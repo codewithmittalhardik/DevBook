@@ -1,0 +1,24 @@
+{% extends 'projects/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="form-container" style="max-width: 500px;">
+    <h2 style="margin-top: 0; margin-bottom: 1rem; color: var(--text-primary); text-align: center;">
+        {% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}
+    </h2>
+    
+    <p style="color: var(--text-secondary); margin-bottom: 2rem; text-align: center; font-size: 1rem; line-height: 1.6;">
+        {% blocktrans with provider.name as provider %}You are about to sign in using a third-party account from {{ provider }}.{% endblocktrans %}
+    </p>
+
+    <form method="post" style="display: flex; flex-direction: column; gap: 1rem;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary" style="padding: 0.85rem; font-size: 1rem; font-weight: 700; width: 100%;">
+            {% trans "Continue to DevBook" %}
+        </button>
+        <a href="{% url 'login' %}" class="btn btn-secondary" style="text-align: center; padding: 0.85rem; font-size: 0.95rem;">
+            {% trans "Cancel" %}
+        </a>
+    </form>
+</div>
+{% endblock %}

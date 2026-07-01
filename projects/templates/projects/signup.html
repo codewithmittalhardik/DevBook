@@ -1,0 +1,47 @@
+{% extends 'projects/base.html' %}
+{% load socialaccount %}
+
+{% block content %}
+<div class="form-container" style="max-width: 450px;">
+    <h2 style="margin-top: 0; margin-bottom: 1.5rem; color: var(--text-primary); text-align: center;">Create Your Account</h2>
+    
+    <form method="post" novalidate>
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div style="color: var(--danger); background: rgba(239, 68, 68, 0.1); padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.9rem; border: 1px solid rgba(239, 68, 68, 0.2);">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div style="margin-bottom: 1.25rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <span style="color: var(--danger); font-size: 0.8rem; margin-top: -0.75rem; margin-bottom: 1.25rem; display: block;">{{ field.errors.0 }}</span>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem; margin-top: 1rem;">Register Dev Profile</button>
+    </form>
+
+    <div class="auth-separator">or</div>
+    
+    <div class="social-login-container">
+        <a href="{% provider_login_url 'github' %}" class="btn-social btn-github">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577v-2.234c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.82 1.102.82 2.222v3.293c0 .319.22.694.825.576C20.565 21.795 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            Sign Up with GitHub
+        </a>
+        <a href="{% provider_login_url 'google' %}" class="btn-social btn-google">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#EA4335" d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.19 2.7 1.24 6.636l4.026 3.129z"/><path fill="#4285F4" d="M23.64 12.273c0-.868-.077-1.705-.22-2.518H12v4.814h6.545a5.59 5.59 0 0 1-2.427 3.664l3.9 3.018c2.28-2.1 3.62-5.19 3.62-8.977z"/><path fill="#FBBC05" d="M5.266 14.235a7.12 7.12 0 0 1-.357-2.235c0-.776.13-1.522.357-2.235L1.24 6.636A11.96 11.96 0 0 0 0 12c0 1.92.45 3.738 1.24 5.364l4.026-3.129z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.077 7.93-2.923l-3.9-3.018c-1.08.723-2.46 1.159-4.03 1.159-3.11 0-5.743-2.1-6.685-4.923L1.3 17.43C3.25 21.3 7.32 24 12 24z"/></svg>
+            Sign Up with Google
+        </a>
+    </div>
+    
+    <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--text-secondary);">
+        Already have an account? <a href="{% url 'login' %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">Log In</a>
+    </div>
+</div>
+{% endblock %}

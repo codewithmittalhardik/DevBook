@@ -1,0 +1,30 @@
+{% extends 'projects/base.html' %}
+
+{% block content %}
+<div class="form-container">
+    <h2 style="margin-top: 0; margin-bottom: 0.5rem; color: var(--text-primary);">Edit Developer Profile</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem;">Update your showcase options. Adding a backend certificate URL will display a badge next to your projects.</p>
+    
+    <form method="post" novalidate>
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small style="color: var(--text-secondary); display: block; margin-top: -0.75rem; margin-bottom: 1.25rem; font-size: 0.8rem;">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <span style="color: var(--danger); font-size: 0.8rem; display: block; margin-top: -0.75rem; margin-bottom: 1.25rem;">{{ field.errors.0 }}</span>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">Update Profile</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="flex: 1; text-align: center;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevBook - Developer Registry</title>
+    
+    <!-- Inline script to prevent theme flash (FOUC) -->
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', initialTheme);
+    </script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- Pulsing background aurora graphics -->
+    <div class="aurora-blob aurora-1"></div>
+    <div class="aurora-blob aurora-2"></div>
+
+    <nav>
+        <a href="{% url 'dashboard' %}" class="nav-brand">DevBook</a>
+        <div class="nav-actions">
+            {% if user.is_authenticated %}
+                <span style="font-size: 0.9rem; opacity: 0.85;">Welcome, <strong>{{ user.username }}</strong></span>
+                <a href="{% url 'project_create' %}">+ Add Project</a>
+                <a href="{% url 'profile_edit' %}">My Profile</a>
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none; border:none; color:var(--text-primary); cursor:pointer; font-weight:600; font-size:0.95rem; font-family:inherit;">Log Out</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Log In</a>
+                <a href="{% url 'signup' %}" class="btn btn-primary" style="color:white; padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.85rem;">Sign Up</a>
+            {% endif %}
+            
+            <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle theme">
+                🌓
+            </button>
+        </div>
+    </nav>
+
+    <!-- Success/Error Toast Notification Center -->
+    {% if messages %}
+        <div class="messages-container" id="messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {% if message.tags == 'success' %}
+                        ✨
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}
+                        ⚠️
+                    {% else %}
+                        ℹ️
+                    {% endif %}
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Theme toggler logic & Toast removal script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Theme Toggle Action
+            const themeBtn = document.getElementById('themeToggleBtn');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', () => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                });
+            }
+
+            // Auto-fade toasts
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach((alert) => {
+                setTimeout(() => {
+                    alert.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(15px) scale(0.95)';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500);
+                }, 3500);
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% extends 'projects/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="form-container" style="max-width: 480px;">
+    <h2 style="margin-top: 0; margin-bottom: 0.5rem; color: var(--text-primary); text-align: center;">
+        {% trans "Sign Up via Social Provider" %}
+    </h2>
+    <p style="color: var(--text-secondary); margin-bottom: 1.75rem; text-align: center; font-size: 0.9rem; line-height: 1.5;">
+        {% blocktrans with provider.name as provider %}You are about to use your {{ provider }} account to register on DevBook. Please select a username below.{% endblocktrans %}
+    </p>
+
+    <form class="signup" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}" novalidate>
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div style="margin-bottom: 1.25rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <span style="color: var(--danger); font-size: 0.8rem; margin-top: -0.75rem; margin-bottom: 1.25rem; display: block;">{{ field.errors.0 }}</span>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; font-size: 1rem; margin-top: 1rem;">
+            {% trans "Complete Sign Up" %}
+        </button>
+    </form>
+</div>
+{% endblock %}

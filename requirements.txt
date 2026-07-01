@@ -1,0 +1,7 @@
+Django>=5.0.0
+pymysql
+cryptography
+django-allauth
+requests
+pyjwt
+psycopg2-binary
