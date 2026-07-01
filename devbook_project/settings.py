@@ -93,13 +93,31 @@ WSGI_APPLICATION = 'devbook_project.wsgi.application'
 
 
 import dj_database_url
+from urllib.parse import urlparse
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
+RENDER = os.getenv('RENDER', '').lower() in {'1', 'true', 'yes', 'on'}
 
 if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    }
+    parsed = urlparse(DATABASE_URL)
+    use_sqlite_fallback = (
+        RENDER and
+        parsed.scheme.startswith(('postgres', 'postgredb')) and
+        parsed.hostname and
+        'supabase.co' in parsed.hostname
+    )
+
+    if use_sqlite_fallback:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
+    else:
+        DATABASES = {
+            'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+        }
 else:
     DATABASES = {
         'default': {
