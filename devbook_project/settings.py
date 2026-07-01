@@ -39,6 +39,19 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+# Keep cache usage small and controlled to reduce memory pressure.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'devbook-local-cache',
+        'TIMEOUT': 300,
+        'OPTIONS': {
+            'MAX_ENTRIES': 200,
+            'CULL_FREQUENCY': 3,
+        },
+    }
+}
+
 
 # Application definition
 
