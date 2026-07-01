@@ -20,11 +20,11 @@ The system features a centralized, searchable global dashboard that allows recru
 - **Secure User Authentication System:** Built using Django’s security layer to handle clean User Signups, Logins, and Logout actions.
 - **Extended Profile Tables:** Uses Django database signals to generate a developer `Profile` automatically upon signup, allowing users to showcase their LinkedIn profiles and Backend Certificates.
 - **Strict Row-Level CRUD Security:** Full Create, Read, Update, and Delete capabilities on project listings. Users maintain total visibility over the registry but are strictly locked out from modifying or deleting entries owned by other developers.
-- **Instant JavaScript Search Filter:** A fast frontend filter script that scans the dataset parameters in the DOM to hide or reveal project cards instantly based on matching technology tags (e.g., *Django, MySQL, JavaScript*) without generating database hits or page refreshes.
+- **Instant JavaScript Search Filter:** A fast frontend filter script that scans the dataset parameters in the DOM to hide or reveal project cards instantly based on matching technology tags (e.g., *Django, PostgreSQL, JavaScript*) without generating database hits or page refreshes.
 
 ---
 
-## 📊 Database Schema (MySQL Architecture)
+## 📊 Database Schema (PostgreSQL Architecture)
 
 The system leverages a relational model structured cleanly across three interconnected tables:
 
