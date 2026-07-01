@@ -9,7 +9,7 @@ The system features a centralized, searchable global dashboard that allows recru
 ## 🛠️ Tech Stack & Architecture
 
 - **Backend Framework:** Django 5.x (Python)
-- **Database Engine:** MySQL (Relational management utilizing Foreign Keys and Cascading deletes)
+- **Database Engine:** PostgreSQL (Relational management utilizing Foreign Keys and Cascading deletes)
 - **Frontend Presentation:** Semantic HTML5, Custom CSS3 Grid/Cards layout
 - **Client-Side Scripting:** Vanilla JavaScript (Asynchronous Event Listeners for DOM manipulation)
 
@@ -37,7 +37,7 @@ The system leverages a relational model structured cleanly across three intercon
 ## 🚀 Installation & Local Deployment
 
 ### 1. Prerequisites
-Ensure you have Python 3.x installed and a local MySQL server instance running.
+Ensure you have Python 3.x installed and a local MySQL/Postgresql server instance running.
 
 ### 2. Clone the Repository
 ```bash
