@@ -103,7 +103,7 @@
                 <ul>
                     <li><a href="{% url 'dashboard' %}">Home</a></li>
                     <li><a href="{% url 'projects_list' %}">Projects Registry</a></li>
-                    <li><a href="{% url 'about_project' %}">About Project</a></li>
+                    <li><a href="{% url 'about_project' %}">About</a></li>
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'project_create' %}">Add New Project</a></li>
                     {% endif %}
