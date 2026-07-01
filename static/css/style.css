@@ -1201,6 +1201,10 @@ footer {
         gap: 2rem;
         text-align: center;
     }
+
+    .footer-col p{
+        text-align: center;
+    }
     
     .footer-col ul {
         align-items: center;
