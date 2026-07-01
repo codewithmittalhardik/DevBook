@@ -10,12 +10,22 @@ from .forms import SignUpForm, ProjectForm, ProfileForm
 # ==================== PUBLIC/DASHBOARD VIEWS ====================
 
 def dashboard(request):
+    """Displays the landing page / homepage with a centered welcome banner."""
+    return render(request, 'projects/dashboard.html')
+
+
+def projects_list(request):
     """
     Displays the global registry: all project cards from all users.
     Includes the dataset that JavaScript will use for real-time filtering.
     """
     projects = Project.objects.all().select_related('user', 'user__profile')
-    return render(request, 'projects/dashboard.html', {'projects': projects})
+    return render(request, 'projects/projects_list.html', {'projects': projects})
+
+
+def about_project(request):
+    """Renders the About DevBook overview page describing platform features."""
+    return render(request, 'projects/about.html')
 
 
 # ==================== AUTHENTICATION VIEWS ====================

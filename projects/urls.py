@@ -2,8 +2,14 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Global Dashboard / Project Registry
+    # Global Landing Page
     path('', views.dashboard, name='dashboard'),
+    
+    # Global Projects Registry
+    path('projects/', views.projects_list, name='projects_list'),
+    
+    # About Project Page
+    path('about/', views.about_project, name='about_project'),
     
     # User Authentication Paths
     path('signup/', views.signup_view, name='signup'),

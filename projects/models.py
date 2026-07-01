@@ -17,13 +17,6 @@ class Profile(models.Model):
         null=True, 
         help_text="Link to your professional LinkedIn profile."
     )
-    
-    # Showcase your backend certificate right on your profile card
-    certificate_url = models.URLField(
-        blank=True, 
-        null=True, 
-        help_text="URL to verify your backend engineering certificate."
-    )
 
     def __str__(self):
         return f"Profile for {self.user.username}"

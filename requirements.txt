@@ -5,3 +5,5 @@ django-allauth
 requests
 pyjwt
 psycopg2-binary
+whitenoise
+gunicorn

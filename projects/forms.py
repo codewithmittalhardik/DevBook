@@ -37,11 +37,10 @@ class SignUpForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['bio', 'linkedin_url', 'certificate_url']
+        fields = ['bio', 'linkedin_url']
         widgets = {
             'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Tell us about your tech journey...'}),
             'linkedin_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://linkedin.com/in/username'}),
-            'certificate_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://verify.certifcate-link.com'}),
         }
 
 

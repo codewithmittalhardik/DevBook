@@ -1,0 +1,46 @@
+{% extends 'projects/base.html' %}
+
+{% block content %}
+<div class="form-container" style="max-width: 850px; margin: 2rem auto; padding: 3rem; text-align: center;">
+    <div style="font-size: 3rem; margin-bottom: 1.5rem;">📖</div>
+    
+    <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-primary);">About <span class="gradient-text">DevBook</span></h1>
+    <p style="font-size: 1.1rem; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2.5rem;">The Centralized Peer Portfolio Registry</p>
+    
+    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; text-align: left; margin-bottom: 2.5rem;">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary); border-left: 3px solid var(--primary); padding-left: 0.75rem;">Our Mission</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; font-size: 1rem; margin-bottom: 2rem;">
+            DevBook was built to solve a common challenge in developer bootcamps, university computer science classes, and engineering teams: 
+            the lack of a unified space to discover, review, and inspect classmates' active projects. 
+            DevBook provides a clean, automated portal where developers can submit their creations, link their code repositories, and list their technical skills in a single, searchable index.
+        </p>
+        
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary); border-left: 3px solid var(--accent); padding-left: 0.75rem;">Core Features</h3>
+        <ul style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95rem; margin-bottom: 2rem; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+            <li>⚡ <strong>Real-time Tags Filtering:</strong> Search projects instantly by programming languages, frameworks, or database tags.</li>
+            <li>🐙 <strong>GitHub Integration:</strong> Automatically fetch repositories and pre-populate deployment resources directly from your GitHub profile.</li>
+            <li>🔑 <strong>Secure Social Authentication:</strong> Seamless, protected user signup and onboarding workflows using Google and GitHub OAuth.</li>
+            <li>🎭 <strong>Premium Visual Design:</strong> Supports high-contrast light and dark modes, z-indexed account management dropdown menus, custom detail modals, and mouse-hover 3D tilt effects.</li>
+        </ul>
+
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary); border-left: 3px solid var(--success); padding-left: 0.75rem;">Platform Tech Stack</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; font-size: 1rem; margin-bottom: 1.5rem;">
+            DevBook is powered by a modern, high-performance web stack:
+        </p>
+        <div class="tech-badge-container" style="margin-top: 0.5rem;">
+            <span class="tech-tag" style="background: rgba(99, 102, 241, 0.15); color: var(--primary);">Django</span>
+            <span class="tech-tag" style="background: rgba(99, 102, 241, 0.15); color: var(--primary);">Python</span>
+            <span class="tech-tag" style="background: rgba(249, 115, 22, 0.15); color: #fb923c;">Supabase PostgreSQL</span>
+            <span class="tech-tag" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">HTML5 & Vanilla CSS</span>
+            <span class="tech-tag" style="background: rgba(234, 179, 8, 0.15); color: #fde047;">JavaScript</span>
+            <span class="tech-tag" style="background: rgba(168, 85, 247, 0.15); color: var(--accent);">OAuth 2.0</span>
+        </div>
+    </div>
+    
+    <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+        <a href="{% url 'projects_list' %}" class="btn btn-primary" style="padding: 0.75rem 2.5rem; border-radius: 9999px; text-decoration: none; font-weight: 700;">
+            Explore Peer Projects ➔
+        </a>
+    </div>
+</div>
+{% endblock %}
