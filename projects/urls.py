@@ -18,6 +18,7 @@ urlpatterns = [
     
     # Developer Profile Path
     path('profile/edit/', views.profile_edit, name='profile_edit'),
+    path('profile/delete/', views.profile_delete, name='profile_delete'),
     
     # Project CRUD Paths
     path('project/add/', views.project_create, name='project_create'),

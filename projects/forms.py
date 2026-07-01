@@ -1,8 +1,35 @@
 from django import forms
 from django.contrib.auth.models import User
+from allauth.socialaccount.forms import SignupForm
 from .models import Profile, Project
 
 # 1. USER REGISTRATION FORM
+class SocialSignupForm(SignupForm):
+    username = forms.CharField(
+        max_length=150,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Choose a username'
+        }),
+        help_text='This username will be used for your DevBook profile.'
+    )
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if not username:
+            raise forms.ValidationError('Please enter a username.')
+        if User.objects.filter(username__iexact=username).exists():
+            raise forms.ValidationError('This username is already taken.')
+        return username
+
+    def save(self, request):
+        user = super().save(request)
+        user.username = self.cleaned_data['username']
+        user.save(update_fields=['username'])
+        return user
+
+
 class SignUpForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',

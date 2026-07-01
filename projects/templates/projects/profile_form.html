@@ -21,9 +21,10 @@
             </div>
         {% endfor %}
         
-        <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; gap: 1rem;">
-            <button type="submit" class="btn btn-primary" style="flex: 1;">Update Profile</button>
-            <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="flex: 1; text-align: center;">Cancel</a>
+        <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button type="submit" class="btn btn-primary" style="flex: 1; min-width: 140px;">Update Profile</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="flex: 1; text-align: center; min-width: 140px;">Cancel</a>
+            <a href="{% url 'profile_delete' %}" class="btn btn-danger" style="width: 100%; text-align: center; margin-top: 0.5rem;">Delete Account</a>
         </div>
     </form>
 </div>

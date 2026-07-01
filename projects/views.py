@@ -162,3 +162,13 @@ def profile_edit(request):
     else:
         form = ProfileForm(instance=profile)
     return render(request, 'projects/profile_form.html', {'form': form})
+
+
+@login_required
+def profile_delete(request):
+    """Allows users to permanently delete their own account and related data."""
+    if request.method == 'POST':
+        request.user.delete()
+        logout(request)
+        return redirect('dashboard')
+    return render(request, 'projects/profile_confirm_delete.html', {'user': request.user})

@@ -180,6 +180,9 @@ LOGOUT_REDIRECT_URL = 'dashboard'
 # allauth configurations
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_LOGIN_METHODS = {'username', 'email'}
+ACCOUNT_FORMS = {
+    'signup': 'projects.forms.SocialSignupForm',
+}
 
 # Social accounts settings
 SOCIALACCOUNT_PROVIDERS = {

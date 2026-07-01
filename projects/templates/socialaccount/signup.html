@@ -13,15 +13,23 @@
     <form class="signup" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}" novalidate>
         {% csrf_token %}
         
-        {% for field in form %}
+        <div style="margin-bottom: 1.25rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">Choose a username</label>
+            <input type="text" name="username" class="form-control" placeholder="Choose a username" value="{{ form.username.value|default:'' }}" required>
+            {% if form.username.errors %}
+                <span style="color: var(--danger); font-size: 0.8rem; margin-top: 0.4rem; display: block;">{{ form.username.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        {% if form.email %}
             <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <span style="color: var(--danger); font-size: 0.8rem; margin-top: -0.75rem; margin-bottom: 1.25rem; display: block;">{{ field.errors.0 }}</span>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <span style="color: var(--danger); font-size: 0.8rem; margin-top: 0.4rem; display: block;">{{ form.email.errors.0 }}</span>
                 {% endif %}
             </div>
-        {% endfor %}
+        {% endif %}
         
         {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
