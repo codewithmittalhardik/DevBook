@@ -95,6 +95,7 @@ WSGI_APPLICATION = 'devbook_project.wsgi.application'
 from urllib.parse import urlparse
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
+USE_SQLITE_FALLBACK = os.getenv('USE_SQLITE_FALLBACK', '1').lower() in {'1', 'true', 'yes', 'on'}
 
 if DATABASE_URL:
     parsed = urlparse(DATABASE_URL)
@@ -113,16 +114,29 @@ if DATABASE_URL:
             }
         }
     elif parsed.scheme.startswith('postgres') or parsed.scheme.startswith('postgredb'):
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': parsed.path.lstrip('/'),
-                'USER': parsed.username or '',
-                'PASSWORD': parsed.password or '',
-                'HOST': parsed.hostname or '127.0.0.1',
-                'PORT': parsed.port or 5432,
+        is_supabase = bool(parsed.hostname and 'supabase.co' in parsed.hostname)
+        if is_supabase and USE_SQLITE_FALLBACK:
+            DATABASES = {
+                'default': {
+                    'ENGINE': 'django.db.backends.sqlite3',
+                    'NAME': BASE_DIR / 'db.sqlite3',
+                }
             }
-        }
+        else:
+            options = {}
+            if is_supabase:
+                options['sslmode'] = 'require'
+            DATABASES = {
+                'default': {
+                    'ENGINE': 'django.db.backends.postgresql',
+                    'NAME': parsed.path.lstrip('/'),
+                    'USER': parsed.username or '',
+                    'PASSWORD': parsed.password or '',
+                    'HOST': parsed.hostname or '127.0.0.1',
+                    'PORT': parsed.port or 5432,
+                    'OPTIONS': options,
+                }
+            }
     else:
         DATABASES = {
             'default': {
