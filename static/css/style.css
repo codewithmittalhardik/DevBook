@@ -834,6 +834,10 @@ textarea:focus {
     border-color: var(--border);
 }
 
+.user-name {
+    display: inline-block;
+}
+
 [data-theme="light"] .dropdown-trigger:hover,
 [data-theme="light"] .dropdown-trigger.active {
     background: rgba(0, 0, 0, 0.04);
@@ -1176,6 +1180,15 @@ footer {
     display: inline-block;
 }
 
+.footer-intro {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-top: 0.75rem;
+    max-width: 250px;
+    text-align: left;
+}
+
 .footer-copyright {
     color: var(--text-secondary);
     font-size: 0.85rem;
@@ -1202,7 +1215,9 @@ footer {
         text-align: center;
     }
 
-    .footer-col p{
+    .footer-intro {
+        margin-left: auto;
+        margin-right: auto;
         text-align: center;
     }
     
@@ -1213,6 +1228,10 @@ footer {
     .footer-bottom {
         flex-direction: column;
         text-align: center;
+    }
+
+    .user-name {
+        display: none;
     }
 }
 
