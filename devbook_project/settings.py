@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -105,16 +106,30 @@ TEMPLATES = [
 WSGI_APPLICATION = 'devbook_project.wsgi.application'
 
 
-DATABASES = {
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    config = dj_database_url.parse(DATABASE_URL)
+    config['OPTIONS'] = {
+        'ssl': {'ca': None},
+        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+    }
+    DATABASES = {'default': config}
+else:
+    DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('PGDATABASE', 'defaultdb'),
-            'USER': os.environ.get('PGUSER', 'avnadmin'),
-            'PASSWORD': os.environ.get('PGPASSWORD', ''),
-            'HOST': os.environ.get('PGHOST', ''),
-            'PORT': os.environ.get('PGPORT', '17460'),
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('MYSQL_DATABASE', 'defaultdb'),
+            'USER': os.environ.get('MYSQL_USER', 'avnadmin'),
+            'PASSWORD': os.environ.get('MYSQL_PASSWORD', ''),
+            'HOST': os.environ.get('MYSQL_HOST', ''),
+            'PORT': os.environ.get('MYSQL_PORT', ''),
+            'OPTIONS': {
+                'ssl': {'ca': None},
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
         }
-}
+    }
 
 
 # Password validation
