@@ -92,63 +92,23 @@ TEMPLATES = [
 WSGI_APPLICATION = 'devbook_project.wsgi.application'
 
 
-from urllib.parse import urlparse
+import dj_database_url
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
-USE_SQLITE_FALLBACK = os.getenv('USE_SQLITE_FALLBACK', '1').lower() in {'1', 'true', 'yes', 'on'}
 
 if DATABASE_URL:
-    parsed = urlparse(DATABASE_URL)
-    if parsed.scheme.startswith('mysql'):
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.mysql',
-                'NAME': parsed.path.lstrip('/'),
-                'USER': parsed.username or '',
-                'PASSWORD': parsed.password or '',
-                'HOST': parsed.hostname or '127.0.0.1',
-                'PORT': parsed.port or 3306,
-                'OPTIONS': {
-                    'charset': 'utf8mb4',
-                }
-            }
-        }
-    elif parsed.scheme.startswith('postgres') or parsed.scheme.startswith('postgredb'):
-        is_supabase = bool(parsed.hostname and 'supabase.co' in parsed.hostname)
-        if is_supabase and USE_SQLITE_FALLBACK:
-            DATABASES = {
-                'default': {
-                    'ENGINE': 'django.db.backends.sqlite3',
-                    'NAME': BASE_DIR / 'db.sqlite3',
-                }
-            }
-        else:
-            options = {}
-            if is_supabase:
-                options['sslmode'] = 'require'
-            DATABASES = {
-                'default': {
-                    'ENGINE': 'django.db.backends.postgresql',
-                    'NAME': parsed.path.lstrip('/'),
-                    'USER': parsed.username or '',
-                    'PASSWORD': parsed.password or '',
-                    'HOST': parsed.hostname or '127.0.0.1',
-                    'PORT': parsed.port or 5432,
-                    'OPTIONS': options,
-                }
-            }
-    else:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / parsed.path.lstrip('/') if parsed.path.lstrip('/') else BASE_DIR / 'db.sqlite3',
-            }
-        }
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    }
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('PGDATABASE', 'postgres'),
+            'USER': os.environ.get('PGUSER', 'postgres'),
+            'PASSWORD': os.environ.get('PGPASSWORD', ''),
+            'HOST': os.environ.get('PGHOST', 'localhost'),
+            'PORT': os.environ.get('PGPORT', '5432'),
         }
     }
 
