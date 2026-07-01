@@ -150,17 +150,16 @@ def project_delete(request, pk):
 
 @login_required
 def profile_edit(request):
-    """Allows users to update their developer bio, certificate links, and LinkedIn."""
-    # Fetch or create the profile for the logged-in user
+    """Allows users to update their username, bio, and LinkedIn profile."""
     profile, created = Profile.objects.get_or_create(user=request.user)
     
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=profile)
+        form = ProfileForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
             return redirect('dashboard')
     else:
-        form = ProfileForm(instance=profile)
+        form = ProfileForm(user=request.user)
     return render(request, 'projects/profile_form.html', {'form': form})
 
 

@@ -61,14 +61,49 @@ class SignUpForm(forms.ModelForm):
 
 
 # 2. USER PROFILE UPDATE FORM
-class ProfileForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['bio', 'linkedin_url']
-        widgets = {
-            'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Tell us about your tech journey...'}),
-            'linkedin_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://linkedin.com/in/username'}),
-        }
+class ProfileForm(forms.Form):
+    username = forms.CharField(
+        max_length=150,
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter a username'}),
+        help_text='Choose a username that other members will see.'
+    )
+    bio = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Tell us about your tech journey...'}),
+    )
+    linkedin_url = forms.URLField(
+        required=False,
+        widget=forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://linkedin.com/in/username'}),
+    )
+
+    def __init__(self, *args, user=None, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+        if self.user:
+            self.fields['username'].initial = self.user.username
+            self.fields['bio'].initial = getattr(self.user.profile, 'bio', '')
+            self.fields['linkedin_url'].initial = getattr(self.user.profile, 'linkedin_url', '')
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if not username:
+            raise forms.ValidationError('Please enter a username.')
+        if User.objects.filter(username__iexact=username).exclude(pk=self.user.pk).exists():
+            raise forms.ValidationError('This username is already taken.')
+        return username
+
+    def save(self, commit=True):
+        self.user.username = self.cleaned_data['username']
+        if commit:
+            self.user.save(update_fields=['username'])
+
+        profile, _ = Profile.objects.get_or_create(user=self.user)
+        profile.bio = self.cleaned_data.get('bio', '')
+        profile.linkedin_url = self.cleaned_data.get('linkedin_url', '')
+        if commit:
+            profile.save()
+        return profile
 
 
 # 3. PROJECT SUBMISSION FORM (CRUD)
