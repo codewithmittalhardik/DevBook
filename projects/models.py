@@ -64,3 +64,19 @@ class Project(models.Model):
         if github_account:
             return github_account.extra_data.get('login')
         return None
+
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+class Review(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        unique_together = ('project', 'user')
+
+    def __str__(self):
+        return f"Review ({self.rating} stars) for {self.project.title} by {self.user.username}"

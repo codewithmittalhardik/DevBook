@@ -1,21 +1,20 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevBook - Developer Registry</title>
-    
-    <!-- Inline script to prevent theme flash (FOUC) -->
+
+    <!-- Force light theme -->
     <script>
-        const savedTheme = localStorage.getItem('theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', initialTheme);
+        document.documentElement.setAttribute('data-theme', 'light');
     </script>
-    
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260702">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1.0.4">
 </head>
+
 <body>
     <!-- Pulsing background aurora graphics -->
     <div class="aurora-blob aurora-1"></div>
@@ -23,66 +22,60 @@
 
     <nav>
         <a href="{% url 'dashboard' %}" class="nav-brand">DevBook</a>
-        <div class="nav-actions">
-            <a href="{% url 'projects_list' %}">Projects</a>
+
+        <!-- Hamburger Toggle Button -->
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+
+        <div class="nav-links-center" id="navLinksCenter">
+            <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Home</a>
+            <a href="{% url 'about_project' %}" class="{% if request.resolver_match.url_name == 'about_project' %}active{% endif %}">About</a>
+            <a href="{% url 'projects_list' %}" class="{% if request.resolver_match.url_name == 'projects_list' %}active{% endif %}">Projects</a>
+        </div>
+
+        <div class="nav-actions" id="navActions">
             {% if user.is_authenticated %}
-                <div class="user-dropdown">
-                    <div class="dropdown-trigger" id="dropdownTrigger">
-                        <div class="avatar-circle-sm">{{ user.username|slice:":1"|upper }}</div>
-                        <span class="user-name">Welcome, <strong>{{ user.username }}</strong> ▾</span>
-                    </div>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <a href="{% url 'project_create' %}">➕ Add Project</a>
-                        <a href="{% url 'profile_edit' %}">👤 My Profile</a>
-                        <div class="dropdown-divider"></div>
-                        <form action="{% url 'logout' %}" method="post" style="margin: 0;">
-                            {% csrf_token %}
-                            <button type="submit">🚪 Log Out</button>
-                        </form>
-                    </div>
+            <div class="user-dropdown">
+                <div class="dropdown-trigger" id="dropdownTrigger">
+                    <div class="avatar-circle-sm">{{ user.username|slice:":1"|upper }}</div>
+                    <span class="user-name">Welcome, <strong>{{ user.username }}</strong> ▾</span>
                 </div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="{% url 'project_create' %}">➕ Add Project</a>
+                    <a href="{% url 'profile_edit' %}">👤 My Profile</a>
+                    <div class="dropdown-divider"></div>
+                    <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit">🚪 Log Out</button>
+                    </form>
+                </div>
+            </div>
             {% else %}
-                <a href="{% url 'login' %}">Log In</a>
-                <!-- <a href="{% url 'signup' %}" class="btn btn-primary" style="color:white; padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.85rem;">Sign Up</a> -->
+            <a href="{% url 'login' %}">Log In</a>
+            <!-- <a href="{% url 'signup' %}" class="btn btn-primary" style="color:white; padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.85rem;">Sign Up</a> -->
             {% endif %}
-            
-            <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle theme">
-                <!-- Sun SVG -->
-                <svg id="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none; vertical-align: middle; color: #fbbf24;">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <!-- Moon SVG -->
-                <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none; vertical-align: middle; color: #818cf8;">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-            </button>
         </div>
     </nav>
 
     <!-- Success/Error Toast Notification Center -->
     {% if messages %}
-        <div class="messages-container" id="messages-container">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {% if message.tags == 'success' %}
-                        ✨
-                    {% elif message.tags == 'error' or message.tags == 'danger' %}
-                        ⚠️
-                    {% else %}
-                        ℹ️
-                    {% endif %}
-                    {{ message }}
-                </div>
-            {% endfor %}
+    <div class="messages-container" id="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {% if message.tags == 'success' %}
+            ✨
+            {% elif message.tags == 'error' or message.tags == 'danger' %}
+            ⚠️
+            {% else %}
+            ℹ️
+            {% endif %}
+            {{ message }}
         </div>
+        {% endfor %}
+    </div>
     {% endif %}
 
     <div class="container">
@@ -105,7 +98,7 @@
                     <li><a href="{% url 'projects_list' %}">Projects Registry</a></li>
                     <li><a href="{% url 'about_project' %}">About</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'project_create' %}">Add New Project</a></li>
+                    <li><a href="{% url 'project_create' %}">Add New Project</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -113,16 +106,19 @@
                 <h5>User Account</h5>
                 <ul>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'profile_edit' %}">Edit Profile Bio</a></li>
-                        <li>
-                            <form action="{% url 'logout' %}" method="post" style="margin:0; padding:0; display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.9rem; font-family:inherit; font-weight:600; padding:0; transition:color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-secondary)'">Log Out Session</button>
-                            </form>
-                        </li>
+                    <li><a href="{% url 'profile_edit' %}">Edit Profile Bio</a></li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" style="margin:0; padding:0; display:inline;">
+                            {% csrf_token %}
+                            <button type="submit"
+                                style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.9rem; font-family:inherit; font-weight:600; padding:0; transition:color 0.2s;"
+                                onmouseover="this.style.color='var(--primary)'"
+                                onmouseout="this.style.color='var(--text-secondary)'">Log Out Session</button>
+                        </form>
+                    </li>
                     {% else %}
-                        <li><a href="{% url 'login' %}">Sign In / Log In</a></li>
-                        <li><a href="{% url 'signup' %}">Create Account</a></li>
+                    <li><a href="{% url 'login' %}">Sign In / Log In</a></li>
+                    <li><a href="{% url 'signup' %}">Create Account</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -140,10 +136,12 @@
                 &copy; 2026 DevBook. Built with ❤️ for peer developers.
             </div>
             <div class="footer-socials" aria-label="Social links">
-                <a href="https://github.com/codewithmittalhardik" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                <a href="https://github.com/codewithmittalhardik" target="_blank" rel="noopener noreferrer"
+                    aria-label="GitHub">
                     <img src="{% static 'img/github-icon.svg' %}" alt="GitHub" class="social-icon">
                 </a>
-                <a href="https://linkedin.com/in/mittalhardik" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <a href="https://linkedin.com/in/mittalhardik" target="_blank" rel="noopener noreferrer"
+                    aria-label="LinkedIn">
                     <img src="{% static 'img/linkedin-icon.svg' %}" alt="LinkedIn" class="social-icon">
                 </a>
             </div>
@@ -153,36 +151,124 @@
     <!-- Theme toggler logic & Toast removal script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Theme Toggle Action with Dynamic SVGs
-            const themeBtn = document.getElementById('themeToggleBtn');
-            const sunIcon = document.getElementById('theme-icon-sun');
-            const moonIcon = document.getElementById('theme-icon-moon');
+            // Hamburger Menu toggle logic
+            const navToggle = document.getElementById("navToggle");
+            const navLinksCenter = document.getElementById("navLinksCenter");
+            const navActions = document.getElementById("navActions");
 
-            const updateThemeIcons = (theme) => {
-                if (sunIcon && moonIcon) {
-                    if (theme === 'dark') {
-                        sunIcon.style.display = 'inline-block';
-                        moonIcon.style.display = 'none';
-                    } else {
-                        sunIcon.style.display = 'none';
-                        moonIcon.style.display = 'inline-block';
+            if (navToggle && navLinksCenter && navActions) {
+                navToggle.addEventListener("click", () => {
+                    navToggle.classList.toggle("active");
+                    navLinksCenter.classList.toggle("active");
+                    navActions.classList.toggle("active");
+                });
+            }
+
+            // SPA transition between Login and Signup pages
+            const attachTransitionHandler = () => {
+                const signupLink = document.getElementById("toggle-to-signup");
+                const loginLink = document.getElementById("toggle-to-login");
+                const formContainer = document.querySelector(".form-container");
+
+                const handleTransition = async (e, targetUrl) => {
+                    e.preventDefault();
+                    if (!formContainer) return;
+
+                    // 1. Fade out the current form container
+                    formContainer.style.transition = "opacity 0.2s ease, transform 0.2s ease";
+                    formContainer.style.opacity = "0";
+                    formContainer.style.transform = "translateY(8px) scale(0.99)";
+
+                    // 2. Fetch the target page dynamically
+                    try {
+                        const response = await fetch(targetUrl);
+                        if (!response.ok) throw new Error("Fetch failed");
+                        const html = await response.text();
+
+                        // Parse response DOM
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, "text/html");
+                        const newContainer = doc.querySelector(".form-container");
+
+                        if (newContainer) {
+                            setTimeout(() => {
+                                // 3. Swap container contents and style layout dimensions
+                                formContainer.innerHTML = newContainer.innerHTML;
+                                formContainer.setAttribute("style", newContainer.getAttribute("style"));
+                                
+                                // Re-run initializations
+                                bindDynamicPasswordConfirm();
+
+                                // 4. Update window URL history state and page title
+                                history.pushState(null, doc.title, targetUrl);
+                                document.title = doc.title;
+
+                                // 5. Fade in the new container content
+                                formContainer.style.opacity = "0";
+                                formContainer.style.transform = "translateY(-8px) scale(0.99)";
+                                formContainer.offsetHeight; // force reflow
+
+                                formContainer.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+                                formContainer.style.opacity = "1";
+                                formContainer.style.transform = "translateY(0) scale(1)";
+
+                                // Rebind transitions on the new elements
+                                attachTransitionHandler();
+                            }, 200);
+                        } else {
+                            window.location.href = targetUrl;
+                        }
+                    } catch (err) {
+                        window.location.href = targetUrl;
                     }
+                };
+
+                if (signupLink) {
+                    signupLink.addEventListener("click", (e) => handleTransition(e, signupLink.getAttribute("href")));
+                }
+                if (loginLink) {
+                    loginLink.addEventListener("click", (e) => handleTransition(e, loginLink.getAttribute("href")));
                 }
             };
 
-            if (themeBtn) {
-                // Initialize active theme icon status
-                const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-                updateThemeIcons(currentTheme);
+            const bindDynamicPasswordConfirm = () => {
+                const passwordInput = document.querySelector('input[name="password"]');
+                const confirmWrapper = document.getElementById('field-wrapper-confirm_password');
+                const confirmInput = document.querySelector('input[name="confirm_password"]');
 
-                themeBtn.addEventListener('click', () => {
-                    const activeTheme = document.documentElement.getAttribute('data-theme');
-                    const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
-                    document.documentElement.setAttribute('data-theme', newTheme);
-                    localStorage.setItem('theme', newTheme);
-                    updateThemeIcons(newTheme);
-                });
-            }
+                if (passwordInput && confirmWrapper) {
+                    const toggleConfirmPassword = () => {
+                        if (passwordInput.value.length > 0) {
+                            confirmWrapper.style.display = 'block';
+                            confirmWrapper.offsetHeight; // force reflow
+                            confirmWrapper.style.opacity = '1';
+                            confirmWrapper.style.transform = 'translateY(0)';
+                            if (confirmInput) confirmInput.required = true;
+                        } else {
+                            confirmWrapper.style.opacity = '0';
+                            confirmWrapper.style.transform = 'translateY(-8px)';
+                            setTimeout(() => {
+                                if (passwordInput.value.length === 0) {
+                                    confirmWrapper.style.display = 'none';
+                                }
+                            }, 300);
+                            if (confirmInput) confirmInput.required = false;
+                        }
+                    };
+
+                    passwordInput.addEventListener('input', toggleConfirmPassword);
+                    toggleConfirmPassword();
+                }
+            };
+
+            // Initialize handling
+            attachTransitionHandler();
+            bindDynamicPasswordConfirm();
+
+            // Handle popstate for back/forward transitions
+            window.addEventListener("popstate", () => {
+                window.location.reload();
+            });
 
             // Auto-fade toasts
             const alerts = document.querySelectorAll('.alert');
@@ -220,4 +306,5 @@
     </script>
 
 </body>
+
 </html>

@@ -3,8 +3,9 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import PermissionDenied
+from django.db.models import Avg, Count
 
-from .models import Project, Profile
+from .models import Project, Profile, Review
 from .forms import SignUpForm, ProjectForm, ProfileForm
 
 # ==================== PUBLIC/DASHBOARD VIEWS ====================
@@ -19,7 +20,10 @@ def projects_list(request):
     Displays the global registry: all project cards from all users.
     Includes the dataset that JavaScript will use for real-time filtering.
     """
-    projects = Project.objects.all().select_related('user', 'user__profile')
+    projects = Project.objects.all().select_related('user', 'user__profile').annotate(
+        average_rating=Avg('reviews__rating'),
+        reviews_count=Count('reviews')
+    )
     return render(request, 'projects/projects_list.html', {'projects': projects})
 
 
@@ -171,3 +175,65 @@ def profile_delete(request):
         logout(request)
         return redirect('dashboard')
     return render(request, 'projects/profile_confirm_delete.html', {'user': request.user})
+
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+import json
+
+@require_http_methods(["GET", "POST"])
+def project_reviews(request, pk):
+    """
+    API view endpoint:
+    GET - Fetches all reviews associated with a project.
+    POST - Creates or updates a logged-in user's review for a project.
+    """
+    project = get_object_or_404(Project, pk=pk)
+
+    if request.method == "GET":
+        reviews = project.reviews.all().select_related("user")
+        reviews_list = []
+        for r in reviews:
+            reviews_list.append({
+                "username": r.user.username,
+                "avatar_initial": r.user.username[0].upper() if r.user.username else "U",
+                "rating": r.rating,
+                "comment": r.comment,
+                "created_at": r.created_at.strftime("%b %d, %Y")
+            })
+        return JsonResponse({"reviews": reviews_list})
+
+    elif request.method == "POST":
+        if not request.user.is_authenticated:
+            return JsonResponse({"error": "Authentication required"}, status=401)
+
+        try:
+            data = json.loads(request.body)
+            rating = int(data.get("rating", 0))
+            comment = data.get("comment", "").strip()
+        except (ValueError, TypeError, json.JSONDecodeError):
+            return JsonResponse({"error": "Invalid request payload"}, status=400)
+
+        if rating < 1 or rating > 5:
+            return JsonResponse({"error": "Rating must be between 1 and 5"}, status=400)
+
+        if not comment:
+            return JsonResponse({"error": "Comment text is required"}, status=400)
+
+        review, created = Review.objects.update_or_create(
+            project=project,
+            user=request.user,
+            defaults={"rating": rating, "comment": comment}
+        )
+
+        return JsonResponse({
+            "status": "success",
+            "created": created,
+            "review": {
+                "username": review.user.username,
+                "avatar_initial": review.user.username[0].upper() if review.user.username else "U",
+                "rating": review.rating,
+                "comment": review.comment,
+                "created_at": review.created_at.strftime("%b %d, %Y")
+            }
+        })
