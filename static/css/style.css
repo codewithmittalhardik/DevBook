@@ -99,39 +99,32 @@ body {
     100% { transform: translate(0px, 0px) scale(1); }
 }
 
-/* Navbar */
+/* Navbar — macOS floating pill bar */
 nav {
     position: sticky;
-    top: 0;
+    top: 0.85rem;
     z-index: 100;
-    background: var(--bg-nav);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-    padding: 1.1rem 2.5rem;
+    background: rgba(12, 14, 24, 0.85);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 0.75rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: var(--theme-transition);
+    width: calc(100% - 2rem);
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 9999px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
-/* Animated scan border line under navbar */
-nav::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1.5px;
-    background: linear-gradient(90deg, var(--primary), var(--accent), var(--success), var(--primary));
-    background-size: 300% 100%;
-    animation: borderScan 8s linear infinite;
-}
-
-@keyframes borderScan {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+[data-theme="light"] nav {
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 .nav-brand {
